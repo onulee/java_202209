@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect
 from students.models import Student
 
 
+
 # 학생전체리스트
 def stuList(request):
     qs = Student.objects.all()
