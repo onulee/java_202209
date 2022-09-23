@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>학생상세페이지</title>
+    <style>
+        div{width:700px; margin:50px auto; }
+        h2{text-align:center;}
+        table,th,td{border:1px solid black; border-collapse:collapse;}
+        table{width:600px; margin:50px auto;}
+        th{width:300px; hegiht:40px; background:#eee;}
+        td{padding-left:40px;}
+        .btn{width:600px; margin:0 auto; text-align:right;}
+        button{width:100px; height:30px; cursor: pointer; }
+    </style>
+    <script>
+        function delBtn(){
+            if(confirm('데이터를 삭제하시겠습니까?')){
+                location.href="{% url 'students:stuDelete' stu.s_no %}"
+            }else{
+                alert('삭제가 취소되었습니다.')
+            }
+        }
+    </script>
+</head>
+<body>
+    <div>
+        <h2>학생상세페이지</h2>
+        <table>
+            <tr>
+                <th>번호</th>
+                <td>{{stu.s_no}}</td>
+            </tr>
+            <tr>
+                <th>학생이름</th>
+                <td>{{stu.s_name}}</td>
+            </tr>
+            <tr>
+                <th>학과</th>
+                <td>{{stu.s_major}}</td>
+            </tr>
+            <tr>
+                <th>나이</th>
+                <td>{{stu.s_age}}</td>
+            </tr>
+            <tr>
+                <th>학년</th>
+                <td>{{stu.s_grade}}</td>
+            </tr>
+            <tr>
+                <th>성별</th>
+                <td>{{stu.s_gender}}</td>
+            </tr>
+            <tr>
+                <th>등록일</th>
+                <td>{{stu.s_date}}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="btn">
+        <a href="{% url 'students:stuUpdate' stu.s_no %}"><button>수정</button></a>
+        <button onclick="delBtn()">삭제</button>
+        <a href="{% url 'students:stuList' %}"><button>목록</button></a>
+    </div>
+
+    
+</body>
+</html>

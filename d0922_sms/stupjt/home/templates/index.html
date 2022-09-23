@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>메인페이지</title>
+</head>
+<body>
+    <h2>메인페이지</h2>
+    <ul>
+        <a href="{% url 'member:memWrite' %}"><li>회원가입</li></a>
+        <a href="{% url 'member:login' %}"><li>로그인</li></a>
+        
+        <a href="/admin"><li>관리자페이지</li></a>
+        <a href="{% url 'students:stuWrite' %}"><li>학생등록페이지</li></a>
+        <a href="{% url 'students:stuList' %}"><li>학생전체리스트</li></a>
+    </ul>
+    
+</body>
+</html>

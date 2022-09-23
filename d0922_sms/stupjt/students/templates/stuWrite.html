@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <title>학생등록페이지</title>
+    <script>
+        function submitbtn(){
+            if ($("#name").val()==''){
+                alert('데이터가 있어야 됩니다.')
+                $("#name").focus()
+                return false;
+            } 
+
+            if ($("input[type=radio][name='gender']:checked").is(":checked")){
+            }else{
+                alert("체크되어 있지 않습니다.")
+            }
+          return document.frm.submit()
+        }
+
+        function cancel(){
+            location.href = "{% url 'index' %}"
+        }
+    </script>
+</head>
+<body>
+    <h2>학생등록페이지</h2>
+    <form action="{% url 'students:stuWriteOk' %}" method="post" name="frm">
+        {% csrf_token %}
+        <label>학생이름</label>
+        <input type="text" name="name" id="name"><br>
+        <label>학과</label>
+        <input type="text" name="major"><br>
+        <label>나이</label>
+        <input type="text" name="age"><br>
+        <label>학년</label>
+        <input type="text" name="grade"><br>
+        <label>성별</label>
+        <br>
+        <input type="radio" name="gender" id="male" value="남자">
+        <label for='male'>남자</label>
+        <input type="radio" name="gender" id="female" value="여자">
+        <label for='female'>여자</label>
+        <br>
+        <button type="button" onclick="submitbtn()">저장</button>
+        <button type="button" onclick="cancel()">취소</button>
+        <br>
+
+
+    </form>
+
+    
+</body>
+</html>
