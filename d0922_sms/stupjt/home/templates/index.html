@@ -9,12 +9,16 @@
 <body>
     <h2>메인페이지</h2>
     <ul>
-        <a href="{% url 'member:memWrite' %}"><li>회원가입</li></a>
-        <a href="{% url 'member:login' %}"><li>로그인</li></a>
-        
-        <a href="/admin"><li>관리자페이지</li></a>
-        <a href="{% url 'students:stuWrite' %}"><li>학생등록페이지</li></a>
-        <a href="{% url 'students:stuList' %}"><li>학생전체리스트</li></a>
+        {% if not request.session.session_id %}
+            <a href="{% url 'member:memWrite' %}"><li>회원가입</li></a>
+            <a href="{% url 'member:login' %}"><li>로그인</li></a>
+        {% else %}
+            <a href="/admin"><li>관리자페이지</li></a>
+            <a href="{% url 'students:stuWrite' %}"><li>학생등록페이지</li></a>
+            <a href="{% url 'students:stuList' %}"><li>학생전체리스트</li></a>
+            <a href="{% url 'member:memList' %}"><li>회원전체리스트</li></a>
+            <a href="{% url 'member:logout' %}"><li>로그아웃</li></a>
+        {% endif %}
     </ul>
     
 </body>

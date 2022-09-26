@@ -43,15 +43,11 @@
                 return false;
             }
 
-            
-
-          //return document.frm.submit()
+          return document.frm.submit()
         }
 
-        
-
         function cancel(){
-            location.href = "{% url 'index' %}"
+            location.href = "{% url 'member:memList' %}"
         }
     </script>
 </head>

@@ -8,17 +8,28 @@
     <title>로그인</title>
     <script>
         function loginBtn(){
-            alert('로그인')
+            if($("#id").val()==""){
+                alert('id를 입력하셔야 합니다.')
+                $("#id").focus()
+                return false
+            }
+
+            $("#frm").submit()
         }
     </script>
 </head>
 <body>
+    {% if msg %}
+       <script>alert('{{ msg }}')</script>
+    {% endif %}
+
     <h2>로그인</h2>
-    <form action="" method="post" name="frm">
+    <form action="{% url 'member:loginOk' %}" method="post" name="frm" id="frm">
+        {% csrf_token %}
         <label>아이디</label>
-        <input type="text" name="id"><br>
+        <input type="text" name="id" id="id"><br>
         <label>패스워드</label>
-        <input type="text" name="pw"><br>
+        <input type="text" name="pw" id="pw"><br>
         <button onclick="loginBtn()">로그인</button>
     </form>
     

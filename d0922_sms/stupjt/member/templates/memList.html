@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원전체리스트</title>
+    <style>
+        * {margin:0; padding:0}
+        div{width:800px; margin:50px auto;}
+        table,th,td{border:1px solid black; border-collapse:collapse;}
+        table{width:750px; text-align:center;}
+        h2{width:750px;height:50px; text-align:center;}
+        h4{width:750px; height:40px; text-align:right;}
+        th{width:100px; height:40px; background:#eee;}
+        td{height:30px;}
+        button{cursor: pointer;}
+        .cbutton{width:700px; margin:20px auto; text-align:center;}
+    </style>
+    {% if not request.session.session_id %}
+       <script>
+        alert("로그인을 하셔야 접근이 가능합니다")
+        location.href="{% url 'member:login' %}"
+       </script>
+    {% endif %}
+
+</head>
+<body>
+    <div>
+        <h2>회원전체리스트</h2>
+        <h4>회원수 : {{ count }} 명</h4>
+        <table>
+            <tr>
+                <th>아이디</th>
+                <th>패스워드</th>
+                <th>성별</th>
+                <th>취미</th>
+            </tr>
+            <!-- 반복시작 -->
+            {% for mem in memList  %}
+            <tr>
+                <td><a href="{% url 'member:memView' mem.m_id %}">{{mem.m_id}}</a></td>
+                <td>{{mem.m_pw}}</td>
+                <td>{{mem.m_gender}}</td>
+                <td>{{mem.m_hobby}}</td>
+            </tr>
+            {% endfor %}
+            <!-- 반복 끝 -->
+        </table>
+        <div class="cbutton">
+            <a href="{% url 'member:memWrite' %}"><button>회원등록</button></a>
+            <a href="{% url 'index' %}"><button>메인페이지</button></a>
+        </div>
+
+    </div>
+
+    
+</body>
+</html>
