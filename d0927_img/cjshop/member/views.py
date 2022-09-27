@@ -5,6 +5,10 @@ from member.models import Member
 def join1(request):
     return render(request,'join01_terms.html')
 
+# 회원가입2
+def join2(request):
+    return render(request,'join02_info_input.html')
+
 # 로그아웃
 def logout(request):
     request.session.clear()

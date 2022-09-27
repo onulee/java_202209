@@ -1,11 +1,13 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<link rel="stylesheet" type="text/css" href="css/style_header.css">
-		<link rel="stylesheet" type="text/css" href="css/style_join02_info_input.css">
-		<link rel="stylesheet" type="text/css" href="css/style_footer.css">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/style_header.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/style_join02_info_input.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/style_footer.css' %}">
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+		<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 		<title>회원가입 - 회원정보입력</title>
 		<script>
 			$(function(){
@@ -16,6 +18,17 @@
 					window.open("idCheck.html","childForm","width=800,height=600,resizable=no,scrollbars=no");
 				});
 			});
+
+			function zipcodeBtn(){
+				new daum.Postcode({
+					oncomplete: function(data) {
+						// 다음주소 api의 정보는 data로 전달 받음
+						$("#zipcode").val(data.zonecode)
+						$("#address1").val(data.address)
+						$("#address2").val(data.roadAddressEnglish)
+					}
+				}).open();
+			}
 		</script>
 	</head>
 	<body>
@@ -162,10 +175,8 @@
 							<label for="">주소</label>
 						</dt>
 						<dd>
-							<input type="text" id="f_postal" name="f_postal" required />
-							<span>-</span>
-							<input type="text" id="l_postal" name="l_postal" required />
-							<input type="button" value="우편번호"/>
+							<input type="text" id="zipcode" name="zipcode" required />
+							<input type="button" onclick="zipcodeBtn()" value="우편번호"/>
 							<input type="text" id="address1" name="address1" required />
 							<input type="text" id="address2" name="address2" required />
 						</dd>

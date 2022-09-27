@@ -525,17 +525,17 @@ input[type="checkbox"]:not(old):checked + label {
 #join_address_dl dt label {
 	padding-top: 50px;
 }
-#join_address_dl dd>input:nth-child(1) {
+#join_address_dl dd>#zipcode {
+	width: 120px; height: 30px;	
+}
+#join_address_dl dd>#l_postal {
 	width: 80px; height: 30px;	
 }
-#join_address_dl dd>input:nth-child(3) {
-	width: 80px; height: 30px;	
-}
-#join_address_dl dd>input:nth-child(5) {
+#join_address_dl dd>#address1 {
 	width: 755px; height: 30px;
 	margin-top: 5px;	
 }
-#join_address_dl dd>input:nth-child(6) {
+#join_address_dl dd>#address2 {
 	width: 755px; height: 30px;
 	margin-top: 5px;	
 }
