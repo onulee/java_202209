@@ -12,6 +12,39 @@
 		<script>
 			$(function(){
 
+				// 이메일select 시 이메일 전달
+				$("#email_select").change(function(){
+					if($("#email_select").val()=="input"){
+						$("#main_tail").attr("readonly",false);
+						$("#main_tail").val("")
+					}else{
+						$("#main_tail").val($("#email_select").val())
+						$("#main_tail").attr("readonly",true);
+					}
+				})
+
+				// 년도
+				var html="<option selected>선택</option>"
+				for (var i=1901;i<=2022;i++){
+					html += "<option value='"+i+"'>"+i+"</option>"
+				}
+				$("#birth_year").html(html)
+
+				// 월
+				var html="<option selected>선택</option>"
+				for (var i=1;i<=12;i++){
+					html += "<option value='"+i+"'>"+i+"</option>"
+				}
+				$("#birth_month").html(html)
+
+				// 일
+				var html="<option selected>선택</option>"
+				for (var i=1;i<=31;i++){
+					html += "<option value='"+i+"'>"+i+"</option>"
+				}
+				$("#birth_day").html(html)
+
+
 				//중복확인 버튼 클릭시
 				$("#idBtn").click(function(){
 					//alert("확인");
@@ -62,12 +95,8 @@
 			</nav>
 		</header>
 		
-		
-		
-		
-		
 		<section>
-			<form name="agree" method="get" action="join03_success.html">
+			<form name="agree" method="get" action="{% url 'member:join3' %}">
 				<div id="subBanner"></div>
 				<div id="locationN">
 					<ul>
@@ -154,17 +183,12 @@
 							<input type="text" id="mail_id" name="mail_id" required />
 							<span>@</span>
 							<input type="text" id="main_tail" name="mail_tail" required />
-							<select>
-								<option selected>직접입력</option>
-								<option>지메일</option>
-								<option>네이버</option>
-								<option>네이트</option>
-								<option>핫메일</option>
-								<option>파란</option>
-								<option>엠팔</option>
-								<option>야후</option>
-								<option>드림위즈</option>
-								<option>한메일(다음)</option>
+							<select id="email_select">
+								<option selected value="input">직접입력</option>
+								<option value="gmail.com">지메일</option>
+								<option value="naver.com">네이버</option>
+								<option value="daum.net">한메일(다음)</option>
+								<option value="nate.com">네이트</option>
 							</select>
 						</dd>
 					</dl>
@@ -203,50 +227,15 @@
 						</dt>
 						<dd>
 							<select id="birth_year" name="birth_year" required>
-								<option selected>선택</option>
-								<option value="1988">1988</option>
-								<option value="1989">1989</option>
-								<option value="1990">1990</option>
-								<option value="1991">1991</option>
-								<option value="1992">1992</option>
-								<option value="1993">1993</option>
-								<option value="1994">1994</option>
-								<option value="1995">1995</option>
-								<option value="1996">1996</option>
-								<option value="1997">1997</option>
-								<option value="1998">1998</option>
-								<option value="1988">1999</option>
-								<option value="1920">2000</option>
+								<!-- birth_year.html(html)-->
 							</select>
 							<span>년</span>
 							<select id="birth_month" name="birth_month" required>
-								<option selected>선택</option>
-								<option value="1">1</option>
-								<option value="2">2</option>
-								<option value="3">3</option>
-								<option value="4">4</option>
-								<option value="5">5</option>
-								<option value="6">6</option>
-								<option value="7">7</option>
-								<option value="8">8</option>
-								<option value="9">9</option>
-								<option value="10">10</option>
-								<option value="11">11</option>
-								<option value="12">12</option>
+								<!-- birth_month.html(html)-->
 							</select>
 							<span>월</span>
 							<select id="birth_day" name="birth_day" required>
-								<option selected>선택</option>
-								<option value="1">1</option>
-								<option value="2">2</option>
-								<option value="3">3</option>
-								<option value="4">4</option>
-								<option value="5">5</option>
-								<option value="6">6</option>
-								<option value="7">7</option>
-								<option value="8">8</option>
-								<option value="9">9</option>
-								<option value="10">10</option>
+								<!-- birth_day.html(html)-->
 							</select>
 							<span>일</span>
 							<div>
