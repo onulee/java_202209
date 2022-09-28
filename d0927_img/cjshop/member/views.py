@@ -8,6 +8,9 @@ def join1(request):
 # 회원가입2
 def join2(request):
     return render(request,'join02_info_input.html')
+# 회원가입3
+def join3(request):
+    return render(request,'join03_success.html')
 
 # 로그아웃
 def logout(request):
