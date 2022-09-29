@@ -4,27 +4,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Pages - Login</title>
   <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR:400,500,700,900&display=swap&subset=korean" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-  <link rel="stylesheet" href="{% static 'css/notice_list.css' %}">
   <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/write.css' %}">
   <script>
-    function writeBtn(){
-      location.href="{% url 'freeBoard:fboardWrite' %}"
-    }
-
-    function searchBtn(){
-      if ($("#sword").val().length<=1){
-        alert("두글자 이상 입력하셔야 합니다.")
-        $("#sword").focus()
+    function replyBtn(){
+      if ($("#title").val()==""){
+        alert("제목을 입력하셔야 등록이 가능합니다.")
+        $("#title").focus()
         return false
       }
-      document.search.submit()
+      document.write.submit()
+    }
+
+    function cancelBtn(){
+      location.href="{% url 'freeBoard:fboardView' fboard.b_no %}"
     }
   </script>
 </head>
+
 <body>
   <header>
     <ul>
@@ -37,7 +37,7 @@
   </header>
 
   <nav>
-    <a href="/"><div class="logo"></div></a>
+    <div class="logo"></div>
 
     <div id="search">
       <div class="search"></div><br>
@@ -61,62 +61,55 @@
   </nav>
 
   <section>
-    <h1>리뷰게시판</h1>
-    <div class="wrapper">
-      <form action="{% url 'freeBoard:fboardSearch' %}" name="search" method="post">
-        {% csrf_token %}
-        <select name="category" id="category" >
-          <option value="all" {% if 'all' in category %}selected {% endif %}>전체</option>
-          <option value="title" {% if 'title' in category %}selected {% endif %}>제목</option>
-          <option value="content" {% if 'content' in category %}selected {% endif %}>내용</option>
-        </select>
+    <h1>게시판 답글쓰기</h1>
+    <hr>
 
-        <div class="title">
-          <input type="text" size="16" name="sword" id="sword" value="{{sword}}">
-        </div>
-        <button type="button" onclick="searchBtn()"><i class="fas fa-search"></i></button>
-      </form>
-    </div>
+    <form action="{% url 'freeBoard:fboardReply' fboard.b_no %}" name="write" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="hidden" name="no" id="no" value="{{fboard.b_no}}">
+      <input type="hidden" name="group" id="group" value="{{fboard.b_group}}">
+      <input type="hidden" name="step" id="step" value="{{fboard.b_step}}">
+      <input type="hidden" name="indent" id="indent" value="{{fboard.b_indent}}">
+      <table>
+        <colgroup>
+          <col width="15%">
+          <col width="85%">
+        </colgroup>
+        <tr>
+          <th>제목</th>
+          <td>
+            <input type="text" name="title" id="title" value="[답글] {{ fboard.b_title}}">
+          </td>
+        </tr>
+        <tr>
+          <th>작성자</th>
+          <td>
+            <input type="text" name="id" value="{{request.session.session_id }}" readonly >
+          </td>
+        </tr>
+        <tr>
+          <th>내용</th>
+          <td>
+            <textarea name="content" cols="50" rows="10">
+              
+-------------------- 
+[답글] {{fboard.b_content}}</textarea>
+          </td>
+        </tr>
+        <tr>
+          <th>이미지 표시</th>
+          <td>
+            <input type="file" name="file" id="file">
+          </td>
+        </tr>
+      </table>
+      <hr>
+      <div class="button-wrapper">
+        <button type="button" onclick="replyBtn()" class="write">답글쓰기</button>
+        <button type="button" onclick="cancelBtn()" class="cancel">취소</button>
+      </div>
+    </form>
 
-    <table>
-      <colgroup>
-        <col width="15%">
-        <col width="45%">
-        <col width="15%">
-        <col width="15%">
-        <col width="10%">
-      </colgroup>
-      <tr>
-        <th>No.</th>
-        <th>제목</th>
-        <th>작성자</th>
-        <th>작성일</th>
-        <th>조회수</th>
-      </tr>
-      <!-- 반복 시작 -->
-      {% for fboard in fboardList %}
-      <tr>
-        <td>{{fboard.b_no}}</td>
-        <td class="table-title"><a href="{% url 'freeBoard:fboardView' fboard.b_no %}">{{fboard.b_title}}</a></td>
-        <td>{{fboard.member.name}}</td>
-        <td>{{fboard.b_date|date:'Y-m-d H:i'}}</td>
-        <td>{{fboard.b_hit}}</td>
-      </tr>
-      {% endfor %}
-      <!-- 반복 끝 -->
-    </table>
-
-    <ul class="page-num">
-      <li class="first"></li>
-      <li class="prev"></li>
-      <li class="num">
-        <div>1</div>
-      </li>
-      <li class="next"></li>
-      <li class="last"></li>
-    </ul>
-
-    <div class="write" onclick="writeBtn()">쓰기</div>
   </section>
 
   <footer>

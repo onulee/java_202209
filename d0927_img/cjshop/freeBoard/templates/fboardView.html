@@ -8,23 +8,22 @@
   <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR:400,500,700,900&display=swap&subset=korean" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
-  <link rel="stylesheet" href="{% static 'css/notice_list.css' %}">
-  <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+  <link rel="stylesheet" href="{% static 'css/read.css' %}">
+  {% if not request.session.session_id %}
+     <script>
+        alert('로그인을 하셔야 접근이 가능합니다.')
+        location.href = "{% url 'member:login' %}"
+     </script>
+  {% endif %}
   <script>
-    function writeBtn(){
-      location.href="{% url 'freeBoard:fboardWrite' %}"
-    }
-
-    function searchBtn(){
-      if ($("#sword").val().length<=1){
-        alert("두글자 이상 입력하셔야 합니다.")
-        $("#sword").focus()
-        return false
+    function delBtn(){
+      if(confirm("정말 삭제하시겠습니까?")){
+        location.href="{% url 'freeBoard:fboardDelete' fboard.b_no %}"
       }
-      document.search.submit()
     }
   </script>
 </head>
+
 <body>
   <header>
     <ul>
@@ -37,7 +36,7 @@
   </header>
 
   <nav>
-    <a href="/"><div class="logo"></div></a>
+    <div class="logo"></div>
 
     <div id="search">
       <div class="search"></div><br>
@@ -62,61 +61,37 @@
 
   <section>
     <h1>리뷰게시판</h1>
-    <div class="wrapper">
-      <form action="{% url 'freeBoard:fboardSearch' %}" name="search" method="post">
-        {% csrf_token %}
-        <select name="category" id="category" >
-          <option value="all" {% if 'all' in category %}selected {% endif %}>전체</option>
-          <option value="title" {% if 'title' in category %}selected {% endif %}>제목</option>
-          <option value="content" {% if 'content' in category %}selected {% endif %}>내용</option>
-        </select>
-
-        <div class="title">
-          <input type="text" size="16" name="sword" id="sword" value="{{sword}}">
-        </div>
-        <button type="button" onclick="searchBtn()"><i class="fas fa-search"></i></button>
-      </form>
-    </div>
 
     <table>
-      <colgroup>
-        <col width="15%">
-        <col width="45%">
-        <col width="15%">
-        <col width="15%">
-        <col width="10%">
-      </colgroup>
       <tr>
-        <th>No.</th>
-        <th>제목</th>
-        <th>작성자</th>
-        <th>작성일</th>
-        <th>조회수</th>
+        <th><strong>제목</strong><span class="separator">|</span>{{fboard.b_title}}</th>
       </tr>
-      <!-- 반복 시작 -->
-      {% for fboard in fboardList %}
       <tr>
-        <td>{{fboard.b_no}}</td>
-        <td class="table-title"><a href="{% url 'freeBoard:fboardView' fboard.b_no %}">{{fboard.b_title}}</a></td>
-        <td>{{fboard.member.name}}</td>
-        <td>{{fboard.b_date|date:'Y-m-d H:i'}}</td>
-        <td>{{fboard.b_hit}}</td>
+        <td><strong>작성자</strong><span class="separator">|</span>{{fboard.member.name}}</td>
       </tr>
-      {% endfor %}
-      <!-- 반복 끝 -->
+      <tr>
+        <td><strong>날짜</strong><span class="separator">|</span>{{fboard.b_date|date:'Y-m-d H:i'}}</td>
+      </tr>
+      <tr>
+        <td><strong>내용</strong><span class="separator">|</span>{{fboard.b_content}}</td>
+      </tr>
+      <tr>
+        <td class="article">
+          <img src="/media/{{fboard.b_file}}" alt="" width="80%">
+        </td>
+      </tr>
+      <tr>
+        <td><strong>다음글</strong> <span class="separator">|</span> [키즈잼] 2월 프로그램 안내</td>
+      </tr>
+      <tr>
+        <td><strong>이전글</strong> <span class="separator">|</span> [키즈잼] 2020년 1분기 정기 휴관일 안내</td>
+      </tr>
     </table>
 
-    <ul class="page-num">
-      <li class="first"></li>
-      <li class="prev"></li>
-      <li class="num">
-        <div>1</div>
-      </li>
-      <li class="next"></li>
-      <li class="last"></li>
-    </ul>
-
-    <div class="write" onclick="writeBtn()">쓰기</div>
+    <a href="{% url 'freeBoard:fboardList' %}"><div class="list" >목록</div></a>
+    <div class="list" onclick="delBtn()">삭제</div>
+    <a href="{% url 'freeBoard:fboardUpdate' fboard.b_no %}"><div class="list">수정</div></a>
+    <a href="{% url 'freeBoard:fboardReply' fboard.b_no %}"><div class="list">답글쓰기</div></a>
   </section>
 
   <footer>
