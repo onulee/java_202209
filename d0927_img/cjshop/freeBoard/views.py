@@ -3,6 +3,7 @@ from django.shortcuts import render,redirect
 from member.models import Member
 from freeBoard.models import Fboard
 from django.db.models import F,Q
+from django.core.paginator import Paginator
 
 # 답글쓰기
 def fboardReply(request,b_no):
@@ -16,19 +17,23 @@ def fboardReply(request,b_no):
         member = Member.objects.get(id=id)
         print("views id : ",id)
         b_no = request.POST.get("no")
-        b_group = int(request.POST.get("group"))
-        b_step = int(request.POST.get("step"))
-        b_indent = int(request.POST.get("indent"))
+        b_group = int(request.POST.get("group"))   # 부모의 group
+        b_step = int(request.POST.get("step"))     # 부모의 step
+        b_indent = int(request.POST.get("indent")) # 부모의 indent
         
         b_title = request.POST.get("title")
         b_content = request.POST.get("content")
         b_file = request.FILES.get('file',None)
         print("views file : ",b_file)
         
-        # 같은 그룹에 있는 게시글 전부 step 1씩 증가
-              
+        # 부모의 step보다 큰수는 모두 +1을 해야 함.
+        Fboard.objects.filter(b_group=b_group,b_step__gt=b_step).update\
+            (b_step=F('b_step')+1)
         
-        #저장
+        # reboard = Fboard.objects.filter(b_group=b_group,b_step__gt=b_step)
+        # reboard.update(b_step=F('b_step')+1)
+        
+        # 저장 - 부모의 group같아야 함, step+1, indent+1
         qs = Fboard(member=member,b_title=b_title,b_content=b_content,\
             b_group=b_group,b_step=b_step+1,b_indent=b_indent+1,b_file=b_file)
         qs.save()
@@ -95,8 +100,11 @@ def fboardView(request,b_no):
 # 게시판리스트
 def fboardList(request):
     qs = Fboard.objects.order_by('-b_group','b_step')
+    paginator = Paginator(qs,10)  # qs/10 총하단페이지 수 
+    nowpage = int(request.GET.get('nowpage',1)) # 요청받은 페이지,없으면 1페이지
+    qs = paginator.get_page(nowpage)  # 3페이지 게시글을 보내줌.
     print(qs)
-    context={'fboardList':qs}
+    context={'fboardList':qs,'nowpage':nowpage}
     return render(request,'fboardList.html',context)
 
 # 게시판글쓰기
@@ -104,7 +112,7 @@ def fboardWrite(request):
     if request.method == 'GET':
         return render(request,'fboardWrite.html')
     else:
-        id = request.session['session_id']
+        id = request.session['session_id'] # session가져오기
         print("views id : ",id)
         member = Member.objects.get(id=id)
         b_title = request.POST.get("title")

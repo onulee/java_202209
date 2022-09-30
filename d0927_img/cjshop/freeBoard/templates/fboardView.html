@@ -73,7 +73,7 @@
         <td><strong>날짜</strong><span class="separator">|</span>{{fboard.b_date|date:'Y-m-d H:i'}}</td>
       </tr>
       <tr>
-        <td><strong>내용</strong><span class="separator">|</span>{{fboard.b_content}}</td>
+        <td><strong>내용</strong><span class="separator">|</span>{{fboard.b_content | safe }}</td>
       </tr>
       <tr>
         <td class="article">

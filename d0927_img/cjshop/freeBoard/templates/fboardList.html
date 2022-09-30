@@ -97,7 +97,17 @@
       {% for fboard in fboardList %}
       <tr>
         <td>{{fboard.b_no}}</td>
-        <td class="table-title"><a href="{% url 'freeBoard:fboardView' fboard.b_no %}">{{fboard.b_title}}</a></td>
+        <td class="table-title">
+          <a href="{% url 'freeBoard:fboardView' fboard.b_no %}">
+            {% if fboard.b_indent > 0 %}
+              {% comment %} rjust:공백제거후 fboard.b_indent만큼 리스트처리해줌 {% endcomment %}
+              {% for i in "x"|rjust:fboard.b_indent %}
+                ▶ 
+              {% endfor %}
+            {% endif %}
+            {{fboard.b_title}}
+          </a>
+        </td>
         <td>{{fboard.member.name}}</td>
         <td>{{fboard.b_date|date:'Y-m-d H:i'}}</td>
         <td>{{fboard.b_hit}}</td>
@@ -109,9 +119,13 @@
     <ul class="page-num">
       <li class="first"></li>
       <li class="prev"></li>
-      <li class="num">
-        <div>1</div>
-      </li>
+      <!-- 페이지처리 -->
+      {% for page in fboardList.paginator.page_range %}
+      <a href="">
+      <li class="num"><div>{{page}}</div></li>
+      </a>
+      {% endfor %}
+      <!--  페이지처리 끝 -->
       <li class="next"></li>
       <li class="last"></li>
     </ul>
