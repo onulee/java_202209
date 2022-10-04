@@ -12,7 +12,7 @@
   <script src="http://code.jquery.com/jquery-latest.min.js"></script>
   <script>
     function writeBtn(){
-      location.href="{% url 'freeBoard:fboardWrite' %}"
+      location.href="{% url 'freeBoard:fboardWrite' nowpage category sword %}"
     }
 
     function searchBtn(){
@@ -63,7 +63,7 @@
   <section>
     <h1>리뷰게시판</h1>
     <div class="wrapper">
-      <form action="{% url 'freeBoard:fboardSearch' %}" name="search" method="post">
+      <form action="{% url 'freeBoard:fboardList' nowpage category sword %}" name="search" method="post">
         {% csrf_token %}
         <select name="category" id="category" >
           <option value="all" {% if 'all' in category %}selected {% endif %}>전체</option>
@@ -72,7 +72,11 @@
         </select>
 
         <div class="title">
-          <input type="text" size="16" name="sword" id="sword" value="{{sword}}">
+          {% if '1' in category %}
+            <input type="text" size="16" name="sword" id="sword" value="">
+          {% else %}
+            <input type="text" size="16" name="sword" id="sword" value="{{sword}}">
+          {% endif %}
         </div>
         <button type="button" onclick="searchBtn()"><i class="fas fa-search"></i></button>
       </form>
@@ -98,7 +102,8 @@
       <tr>
         <td>{{fboard.b_no}}</td>
         <td class="table-title">
-          <a href="{% url 'freeBoard:fboardView' fboard.b_no %}">
+          {% comment %} <a href="freeBoard/fboardView?nowpage={{nowpage}}&b_no={{fboard.b_no}}"> {% endcomment %}
+          <a href="{% url 'freeBoard:fboardView' nowpage category sword fboard.b_no %}">
             {% if fboard.b_indent > 0 %}
               {% comment %} rjust:공백제거후 fboard.b_indent만큼 리스트처리해줌 {% endcomment %}
               {% for i in "x"|rjust:fboard.b_indent %}
@@ -118,8 +123,8 @@
 
     <ul class="page-num">
       {% if fboardList.has_previous %}
-        <a href="{% url 'freeBoard:fboardList' 1 %}"><li class="first"></li></a>
-        <a href="{% url 'freeBoard:fboardList' fboardList.previous_page_number %}"><li class="prev"></li></a>
+        <a href="{% url 'freeBoard:fboardList' 1 category sword %}"><li class="first"></li></a>
+        <a href="{% url 'freeBoard:fboardList' fboardList.previous_page_number category sword %}"><li class="prev"></li></a>
       {% else %}
         <li class="first"></li>
         <li class="prev"></li>
@@ -130,14 +135,14 @@
           <li class="num numOver"><div>{{page}}</div></li>
         {% else %}
             <li class="num">
-              <a href="{% url 'freeBoard:fboardList' page %}"><div>{{page}}</div></a>
+              <a href="{% url 'freeBoard:fboardList' page category sword %}"><div>{{page}}</div></a>
             </li>
         {% endif %}
       {% endfor %}
       <!--  페이지처리 끝 -->
       {% if fboardList.has_next %}
-        <a href="{% url 'freeBoard:fboardList' fboardList.next_page_number %}"><li class="next"></li></a>
-        <a href="{% url 'freeBoard:fboardList' fboardList.paginator.num_pages %}"><li class="last"></li></a>
+        <a href="{% url 'freeBoard:fboardList' fboardList.next_page_number category sword %}"><li class="next"></li></a>
+        <a href="{% url 'freeBoard:fboardList' fboardList.paginator.num_pages category sword %}"><li class="last"></li></a>
       {% else %}
       <li class="next"></li>
       <li class="last"></li>

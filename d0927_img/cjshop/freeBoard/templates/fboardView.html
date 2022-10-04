@@ -18,7 +18,7 @@
   <script>
     function delBtn(){
       if(confirm("정말 삭제하시겠습니까?")){
-        location.href="{% url 'freeBoard:fboardDelete' fboard.b_no %}"
+        location.href="{% url 'freeBoard:fboardDelete' nowpage category sword fboard.b_no %}"
       }
     }
   </script>
@@ -88,10 +88,10 @@
       </tr>
     </table>
 
-    <a href="{% url 'freeBoard:fboardList' %}"><div class="list" >목록</div></a>
+    <a href="{% url 'freeBoard:fboardList' nowpage category sword %}"><div class="list" >목록</div></a>
     <div class="list" onclick="delBtn()">삭제</div>
-    <a href="{% url 'freeBoard:fboardUpdate' fboard.b_no %}"><div class="list">수정</div></a>
-    <a href="{% url 'freeBoard:fboardReply' fboard.b_no %}"><div class="list">답글쓰기</div></a>
+    <a href="{% url 'freeBoard:fboardUpdate' nowpage category sword fboard.b_no %}"><div class="list">수정</div></a>
+    <a href="{% url 'freeBoard:fboardReply' nowpage category sword fboard.b_no %}"><div class="list">답글쓰기</div></a>
   </section>
 
   <footer>

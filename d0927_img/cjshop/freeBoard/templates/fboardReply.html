@@ -20,7 +20,7 @@
     }
 
     function cancelBtn(){
-      location.href="{% url 'freeBoard:fboardView' fboard.b_no %}"
+      location.href="{% url 'freeBoard:fboardView' nowpage category sword fboard.b_no %}"
     }
   </script>
 </head>
@@ -64,7 +64,7 @@
     <h1>게시판 답글쓰기</h1>
     <hr>
 
-    <form action="{% url 'freeBoard:fboardReply' fboard.b_no %}" name="write" method="post" enctype="multipart/form-data">
+    <form action="{% url 'freeBoard:fboardReply' nowpage category sword fboard.b_no %}" name="write" method="post" enctype="multipart/form-data">
       {% csrf_token %}
       <input type="hidden" name="no" id="no" value="{{fboard.b_no}}">
       <input type="hidden" name="group" id="group" value="{{fboard.b_group}}">

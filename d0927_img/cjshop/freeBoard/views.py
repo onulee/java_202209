@@ -6,10 +6,10 @@ from django.db.models import F,Q
 from django.core.paginator import Paginator
 
 # 답글쓰기
-def fboardReply(request,b_no):
+def fboardReply(request,nowpage,category,sword,b_no):
     if request.method == 'GET':
         qs = Fboard.objects.get(b_no=b_no)
-        context = {"fboard":qs}
+        context = {"fboard":qs,"nowpage":nowpage,"category":category,"sword":sword}
         print("views :",b_no)
         return render(request,'fboardReply.html',context)
     else:
@@ -37,38 +37,24 @@ def fboardReply(request,b_no):
         qs = Fboard(member=member,b_title=b_title,b_content=b_content,\
             b_group=b_group,b_step=b_step+1,b_indent=b_indent+1,b_file=b_file)
         qs.save()
-        return redirect('freeBoard:fboardList')
+        return redirect('freeBoard:fboardList', nowpage,category,sword)
     return
 
 
-# 게시글 검색
-def fboardSearch(request):
-    category = request.POST.get('category') # all,title,content
-    sword = request.POST.get('sword')       # 검색어
-    if category=='all':
-        qs = Fboard.objects.filter(Q(b_title__contains=sword)|Q(b_content__contains=sword))
-    elif category == 'title':
-        # content검색
-        qs = Fboard.objects.filter(b_title__contains=sword)
-    else:
-        # content검색
-        qs = Fboard.objects.filter(b_content__contains=sword)
-    
-    context={"fboardList":qs,"category":category,"sword":sword}
-    return render(request,'fboardList.html',context)
+
 
 # 게시판 글삭제
-def fboardDelete(request,b_no):
+def fboardDelete(request,nowpage,category,sword,b_no):
     qs = Fboard.objects.get(b_no=b_no)
     qs.delete()
-    return redirect('freeBoard:fboardList')
+    return redirect('freeBoard:fboardList', nowpage,category,sword)
 
 
 # 게시판 업데이트
-def fboardUpdate(request,b_no):
+def fboardUpdate(request,nowpage,category,sword,b_no):
     if request.method=='GET':
         qs = Fboard.objects.get(b_no=b_no)
-        context = {"fboard":qs}
+        context = {"fboard":qs,"nowpage":nowpage,"category":category,"sword":sword}
         print("views :",b_no)
         return render(request,'fboardUpdate.html',context)
     else:
@@ -86,31 +72,60 @@ def fboardUpdate(request,b_no):
             qs.b_file=b_file
         qs.save()
         
-        return redirect('freeBoard:fboardList')
+        return redirect('freeBoard:fboardList', nowpage,category,sword)
         
 
 # 게시판뷰
-def fboardView(request,b_no):
+def fboardView(request,nowpage,category,sword,b_no):
     qs = Fboard.objects.get(b_no=b_no)
-    context = {"fboard":qs}
     print("views :",b_no)
+    context = {"fboard":qs,'nowpage':nowpage,"category":category,"sword":sword}
     return render(request,'fboardView.html',context)
 
 
-# 게시판리스트
-def fboardList(request,nowpage):
-    # nowpage = int(request.GET.get('nowpage',1)) # 요청받은 페이지,없으면 1페이지
-    qs = Fboard.objects.order_by('-b_group','b_step')
-    print("view nowpage : ",nowpage)
+### 게시판리스트
+def fboardList(request,nowpage,category,sword):
+    # 1. 게시판리스트페이지가 호출되어 넘어온 1페이지 - 검색어 공백
+    # 2. 게시판리스트페이지에서 넘어온 2페이지 - 검색어 공백
+    # 3. 검색을 해서 넘어온 1페이지 - 검색어 있음
+    # 4. 검색을 해서 넘어온 2페이지 - 검색어 있음
+    print("view List : ",nowpage,category,sword)
+    
+    # 게시판리스트 호출 - 검색버튼 클릭해서 넘어온 페이지
+    if request.method == "POST":
+       ncategory = request.POST.get('category') # all,title,content
+       nsword = request.POST.get('sword')       # 검색어
+       category = ncategory
+       sword = nsword
+    
+    # db 게시글 호출   
+    if category=='1' and sword =='1':
+        qs = Fboard.objects.order_by('-b_group','b_step')  #모두 검색
+    else:
+        if category=='all':
+            qs = Fboard.objects.filter(Q(b_title__contains=sword)|Q(b_content__contains=sword))
+        elif category == 'title':
+            # content검색
+            qs = Fboard.objects.filter(b_title__contains=sword)
+        else:
+            # content검색
+            qs = Fboard.objects.filter(b_content__contains=sword)
+    
+    # 하단페이지 분기    
     paginator = Paginator(qs,10)  # qs/10 총하단페이지 수 
     qs = paginator.get_page(nowpage)  # 3페이지 게시글을 보내줌.
-    context={'fboardList':qs,'nowpage':nowpage}
-    return render(request,'fboardList.html',context)
+    
+    context={"fboardList":qs,"category":category,"sword":sword,"nowpage":nowpage}
+    return render(request,'fboardList.html',context)     
+        
+
 
 # 게시판글쓰기
-def fboardWrite(request):
+def fboardWrite(request,nowpage,category,sword,):
+    # write페이지 호출
     if request.method == 'GET':
-        return render(request,'fboardWrite.html')
+        context={"nowpage":nowpage,"category":category,"sword":sword}
+        return render(request,'fboardWrite.html',context)
     else:
         id = request.session['session_id'] # session가져오기
         print("views id : ",id)
@@ -125,6 +140,6 @@ def fboardWrite(request):
         qs.save()
         qs.b_group = qs.b_no
         qs.save()
-        return redirect('freeBoard:fboardList')
+        return redirect('freeBoard:fboardList', nowpage,category,sword)
         
         
