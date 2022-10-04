@@ -3,7 +3,7 @@ from . import views
 
 app_name="freeBoard"
 urlpatterns = [
-    path('fboardList',views.fboardList,name="fboardList"),
+    path('<int:nowpage>/fboardList',views.fboardList,name="fboardList"),
     path('fboardWrite',views.fboardWrite,name="fboardWrite"),
     path('<str:b_no>/fboardView',views.fboardView,name="fboardView"),
     path('<str:b_no>/fboardUpdate',views.fboardUpdate,name="fboardUpdate"),

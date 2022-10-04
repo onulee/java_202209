@@ -7,6 +7,10 @@ body {
   font-size: 16px;
 }
 
+a{
+  text-decoration: none;
+}
+
 /* Header Section */
 header {
   height: 35px;

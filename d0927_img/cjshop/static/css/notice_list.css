@@ -138,9 +138,13 @@ td {
   position: relative;
   top: -15px;
   height: 33px !important;
-  margin-left: 15px;
-  margin-right: 15px;
+  margin-left: 1px;
+  margin-right: 1px;
   border: 1px #989898 solid;
+}
+.numOver {
+  background: #ff7801;
+  color:white;
 }
 
 .num > div {

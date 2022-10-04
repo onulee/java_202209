@@ -98,12 +98,12 @@ def fboardView(request,b_no):
 
 
 # 게시판리스트
-def fboardList(request):
+def fboardList(request,nowpage):
+    # nowpage = int(request.GET.get('nowpage',1)) # 요청받은 페이지,없으면 1페이지
     qs = Fboard.objects.order_by('-b_group','b_step')
+    print("view nowpage : ",nowpage)
     paginator = Paginator(qs,10)  # qs/10 총하단페이지 수 
-    nowpage = int(request.GET.get('nowpage',1)) # 요청받은 페이지,없으면 1페이지
     qs = paginator.get_page(nowpage)  # 3페이지 게시글을 보내줌.
-    print(qs)
     context={'fboardList':qs,'nowpage':nowpage}
     return render(request,'fboardList.html',context)
 

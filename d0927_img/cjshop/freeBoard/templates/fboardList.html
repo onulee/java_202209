@@ -117,17 +117,32 @@
     </table>
 
     <ul class="page-num">
-      <li class="first"></li>
-      <li class="prev"></li>
+      {% if fboardList.has_previous %}
+        <a href="{% url 'freeBoard:fboardList' 1 %}"><li class="first"></li></a>
+        <a href="{% url 'freeBoard:fboardList' fboardList.previous_page_number %}"><li class="prev"></li></a>
+      {% else %}
+        <li class="first"></li>
+        <li class="prev"></li>
+      {% endif %}
       <!-- 페이지처리 -->
       {% for page in fboardList.paginator.page_range %}
-      <a href="">
-      <li class="num"><div>{{page}}</div></li>
-      </a>
+        {% if page == nowpage %}
+          <li class="num numOver"><div>{{page}}</div></li>
+        {% else %}
+            <li class="num">
+              <a href="{% url 'freeBoard:fboardList' page %}"><div>{{page}}</div></a>
+            </li>
+        {% endif %}
       {% endfor %}
       <!--  페이지처리 끝 -->
+      {% if fboardList.has_next %}
+        <a href="{% url 'freeBoard:fboardList' fboardList.next_page_number %}"><li class="next"></li></a>
+        <a href="{% url 'freeBoard:fboardList' fboardList.paginator.num_pages %}"><li class="last"></li></a>
+      {% else %}
       <li class="next"></li>
       <li class="last"></li>
+      {% endif %}
+      
     </ul>
 
     <div class="write" onclick="writeBtn()">쓰기</div>
