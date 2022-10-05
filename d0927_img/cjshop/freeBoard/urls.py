@@ -8,6 +8,8 @@ urlpatterns = [
     path('<int:nowpage>/<str:category>/<str:sword>/<str:b_no>/fboardView',views.fboardView,name="fboardView"),
     path('<int:nowpage>/<str:category>/<str:sword>/<str:b_no>/fboardUpdate',views.fboardUpdate,name="fboardUpdate"),
     path('<int:nowpage>/<str:category>/<str:sword>/<str:b_no>/fboardDelete',views.fboardDelete,name="fboardDelete"),
-    # 답글쓰기
     path('<int:nowpage>/<str:category>/<str:sword>/<str:b_no>/fboardReply',views.fboardReply,name="fboardReply"),
+    # event
+    path('event/',views.event,name="event"),
+    path('<str:b_no>/eventView/',views.eventView,name="eventView"),
 ]

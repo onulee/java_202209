@@ -1,4 +1,5 @@
 from datetime import datetime
+from unittest.util import _MAX_LENGTH
 from django.db import models
 from member.models import Member
 
@@ -27,3 +28,16 @@ class Fboard(models.Model):
     def __str__(self):
         return self.b_title
     
+# 하단댓글DB    
+class Comment(models.Model):    
+    c_no = models.AutoField(primary_key=True)
+    # member가 삭제되면 그대로 존재
+    member = models.ForeignKey(Member,on_delete=models.DO_NOTHING)
+    # fboard가 삭제되면 모두 삭제
+    fboard = models.ForeignKey(Fboard,on_delete=models.CASCADE)
+    c_pw = models.CharField(max_length=10,blank=True)
+    c_content = models.TextField()
+    c_date = models.DateTimeField(default=datetime.now(),blank=True)
+    
+    def __str__(self):
+        return self.c_content
