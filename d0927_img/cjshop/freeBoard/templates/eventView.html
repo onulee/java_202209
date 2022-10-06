@@ -19,14 +19,8 @@
 <script type="text/javascript" src="/static/js/jquery.easing.1.3.js"></script>
 <script type="text/javascript" src="/static/js/idangerous.swiper-2.1.min.js"></script>
 <script type="text/javascript" src="/static/js/jquery.anchor.js"></script>
-<script type="text/javascript">
-$(function(){
-	
-});
-</script>
-<script>
-	$(".replyType").val("반갑습니다.")
-</script>
+
+
 
 
 </head>
@@ -208,6 +202,142 @@ $(function(){
 					<!-- //이전다음글 -->
 
 
+
+					<script type="text/javascript">
+						$(function(){
+							// 댓글리스트
+							$.ajax({
+								url:"{% url 'freeBoard:commList' %}",
+								type:"GET",
+								data:{
+									"b_no":{{fboard.b_no}}
+								},
+								dataType:"json",
+								success:function(data){
+									console.log(data)
+									var html_data =""
+									for(var i in data){
+										html_data += "<ul id='"+ data[i].c_no +"'>"
+										html_data +="<li class='name'>"+data[i].member_id+"<span id='date'>["+data[i].c_date +"]</span></li>"
+										html_data +="<li id='content' class='txt'>"+ data[i].c_content +"</li>"
+										html_data +="<li class='btn'>"
+										if('{{request.session.session_id}}'==data[i].member_id){
+											//                       updateBtn(1,'2022-10-06','이벤트 당첨되었어요.')       
+											html_data +="<a onclick='updateBtn("+ data[i].c_no +",\"" +data[i].c_date+ "\",\""+ data[i].c_content +"\")' class='rebtn'>수정</a>&nbsp"
+											html_data +="<a class='rebtn'>삭제</a>"
+										}	
+										html_data +="</li>"
+										html_data +="</ul>"
+									}
+									$(".replyBox").html(html_data)  // 댓글리스트
+									$(".orange").text(data.length)  // 댓글 개수
+								},
+								error:function(){
+									alert("error")
+								}
+							}) //댓글리스트
+
+							// 댓글쓰기
+							$(".replyBtn").click(function(){
+								if($(".replyType").val().length<2){
+									alert("2글자 이상 입력하셔야 합니다.")
+									return false
+								}
+								$.ajax({
+									url:"{% url 'freeBoard:commWrite' %}",
+									type:"GET",
+									data:{
+										"b_no":{{fboard.b_no}},"c_pw":$(".password").val(),"c_content":$(".replyType").val()
+									},
+									dataType:"json",
+									success:function(data){
+										console.log(data)
+										var html_data =""
+										html_data += "<ul id='"+ data.c_no +"'>"
+										html_data +="<li class='name'>"+'{{request.session.session_id}}'+"<span id='date'>["+data.c_date +"]</span></li>"
+										html_data +="<li id='content' class='txt'>"+ data.c_content +"</li>"
+										html_data +="<li class='btn'>"
+										html_data +="<a onclick='updateBtn("+ data.c_no +",\"" +data.c_date+ "\",\""+ data.c_content +"\")' class='rebtn'>수정</a>&nbsp"
+										html_data +="<a href='#' class='rebtn'>삭제</a>"
+										html_data +="</li>"
+										html_data +="</ul>"
+
+										$(".replyBox").prepend(html_data)  // 댓글리스트
+										alert("댓글이 등록되었습니다.")
+										
+										$(".orange").text(Number($(".orange").text())+1)    // 댓글개수 숫자1증가
+										// 빈공백처리	
+										$(".replyType").val("")
+										$(".replynum").val("")
+
+									},
+									error:function(){
+										alert("error")
+									}
+								})//ajax
+							})//댓글쓰기
+
+							
+						});//$(function(){
+					</script>
+					<script>
+						var updateFormCheck=0
+						//댓글수정폼 
+						function updateBtn(c_no,c_date,c_content){
+							if(updateFormCheck==0){
+								alert("댓글을 수정합니다.")
+								var html_data=""
+								html_data += "<li class='name'>"+'{{request.session.session_id}}'+"<span>["+c_date+"]</span></li>"
+								html_data += "<li class='txt'><textarea class='replyType'>"+c_content +"</textarea></li>"
+								html_data += "<li class='btn'>"
+								html_data += "<a onclick='updateOkBtn("+ c_no +")' class='rebtn'>저장</a>&nbsp"
+								html_data += "<a onclick='cancelBtn("+ c_no +",\"" +c_date+ "\",\""+ c_content +"\")' class='rebtn'>취소</a>"
+								html_data += "</li>"
+								$("#"+c_no).html(html_data)
+								updateFormCheck=1
+							}else{
+								alert("다른 댓글수정창이 닫혀야 수정창을 열수 있습니다.")
+								return false
+							}
+						}//댓글수정폼
+
+						// 댓글수정저장
+						function updateOkBtn(c_no){
+							alert(c_no)
+							$.ajax({
+								url:"",
+								type:"GET",
+								data:{
+									"c_no":c_no,"c_content":$("#"+c_no+".replyType").val()
+								},
+								dataType:"json",
+								success:function(data){
+
+								},
+								error:function(){
+									alert("error")
+								}
+							})
+						}//댓글수정저장
+
+						// 댓글수정취소
+						function cancelBtn(c_no,c_date,c_content){
+							var html_data =""
+							html_data +="<li class='name'>"+'{{request.session.session_id}}'+"<span id='date'>["+c_date +"]</span></li>"
+							html_data +="<li id='content' class='txt'>"+ c_content +"</li>"
+							html_data +="<li class='btn'>"
+							html_data +="<a onclick='updateBtn("+ c_no +",\"" +c_date+ "\",\""+ c_content +"\")' class='rebtn'>수정</a>&nbsp"
+							html_data +="<a href='#' class='rebtn'>삭제</a>"
+							html_data +="</li>"
+
+							$("#"+c_no).html(html_data)
+							updateFormCheck=0
+						}//댓글수정취소
+
+
+					</script>
+					
+
 					<!-- 댓글-->
 					<div class="replyWrite">
 						<ul>
@@ -216,23 +346,17 @@ $(function(){
 								<p class="password">비밀번호&nbsp;&nbsp;<input type="password" class="replynum" /></p>
 								<textarea class="replyType"></textarea>
 							</li>
-							<li class="btn"><a href="#" class="replyBtn">등록</a></li>
+							<li class="btn"><a class="replyBtn">등록</a></li>
 						</ul>
 						<p class="ntic">※ 비밀번호를 입력하시면 댓글이 비밀글로 등록 됩니다.</p>
 					</div>
 
 					<div class="replyBox">
+						<!-- 추가위치 -->
 						<!--반복 시작-->
-						{% for comment in commList %}
-						<ul>
-							<li class="name">{{comment.member.id}} <span>[{{comment.c_date|date:'Y-m-d H:i'}}]</span></li>
-							<li class="txt">대박!!! 이거 저한테 완전 필요한 이벤트였어요!!</li>
-							<li class="btn">
-								<a href="#" class="rebtn">수정</a>
-								<a href="#" class="rebtn">삭제</a>
-							</li>
-						</ul>
-						{% endfor %}
+						
+
+
 						<!--반복 끝-->
 
 						<!-- 댓글수정글입력, 비밀글 -->

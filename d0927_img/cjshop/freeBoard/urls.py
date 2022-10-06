@@ -12,4 +12,7 @@ urlpatterns = [
     # event
     path('event/',views.event,name="event"),
     path('<str:b_no>/eventView/',views.eventView,name="eventView"),
+    # ajax event
+    path('commList/',views.commList,name="commList"),
+    path('commWrite/',views.commWrite,name="commWrite"),
 ]

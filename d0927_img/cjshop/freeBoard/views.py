@@ -4,6 +4,41 @@ from member.models import Member
 from freeBoard.models import Comment, Fboard
 from django.db.models import F,Q
 from django.core.paginator import Paginator
+from django.http import JsonResponse,HttpResponse
+import json
+
+# 댓글쓰기 - ajax
+def commWrite(request):
+    id = request.session.get('session_id')
+    member = Member.objects.get(id=id)
+    b_no = request.GET.get('b_no')
+    fboard = Fboard.objects.get(b_no=b_no)
+    c_pw = request.GET.get('c_pw')
+    c_content = request.GET.get('c_content')
+    
+    # 데이터저장
+    qs = Comment(member=member,fboard=fboard,c_pw=c_pw,c_content = c_content)
+    qs.save()
+    # 필요데이터 가져오기
+    c_no = qs.c_no
+    c_date = qs.c_date
+    
+    # 저장데이터 보내기
+    context={"c_no":c_no,"b_no":b_no,"c_pw":c_pw,"c_content":c_content,"c_date":c_date}
+    return JsonResponse(context) 
+    
+
+# 댓글리스트 - ajax
+def commList(request):
+    b_no = request.GET.get('b_no')
+    print("views commList b_no : ",b_no)
+    comm_qs = Comment.objects.filter(fboard=b_no).order_by('-c_no')
+    # list타입으로 전송 : safe=False
+    clist = list(comm_qs.values()) 
+    print(clist)
+    
+    return JsonResponse(clist,safe=False)
+    
 
 
 # event
