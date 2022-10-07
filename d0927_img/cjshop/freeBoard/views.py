@@ -6,6 +6,70 @@ from django.db.models import F,Q
 from django.core.paginator import Paginator
 from django.http import JsonResponse,HttpResponse
 import json
+from django.views.decorators.csrf import csrf_exempt
+import requests
+
+
+
+# 공공데이터 리스트
+def publicList(request):
+
+    public_key ='918RE13GA7OY7ZEmUzApgbOeAcQoZ%2FaHsXWcqPAKQ9YNNPj83KOstRMRIUrCFIAcm9qj2R6b7NFZjp%2FYsYzJLg%3D%3D'
+    resultType ='json'
+    url = 'http://apis.data.go.kr/1160100/service/GetStockSecuritiesInfoService/getStockPriceInfo?serviceKey={}&numOfRows=10&pageNo=1&resultType={}'.format(public_key,resultType)
+    res = requests.get(url)  # url에 있는 소스 코드 가져오기
+    json_res = json.loads(res.text) # 모든 소스코드, json타입으로 변경
+    publicList = json_res['response']['body']['items']['item']
+    numOfRows = json_res['response']['body']['numOfRows']
+    # nlist = list(map(int,numOfRows)) #dic타입을 list타입으로 변경
+    # nlist = list(numOfRows) #dic타입을 list타입으로 변경
+    
+    print("numOfRows : ",numOfRows)
+    print("publicList")
+    print(publicList)
+    context={'publicList':publicList,"numOfRows":numOfRows}
+    
+    
+    
+    return render(request,'publicList.html',context)
+
+
+
+# post방식 테스트
+@csrf_exempt
+def commPost(request):
+    test = request.POST.get("test")
+    print(test)
+    context = {"msg":"데이터전송이 잘되었습니다." }
+    return JsonResponse(context)
+
+
+# 댓글삭제
+def commDelete(request):
+    c_no = request.GET.get('c_no')
+    qs = Comment.objects.get(c_no=c_no)
+    qs.delete()
+    context={'msg':"댓글이 삭제되었습니다."}
+    return JsonResponse(context)
+
+
+# 댓글수정저장
+def commUpdate(request):
+    # 데이터 가져오기
+    c_no = request.GET.get('c_no')
+    c_content = request.GET.get('c_content')
+    id = request.session.get('session_id')
+    print("views commUpdate : ",c_content)
+    # 검색 및 저장
+    qs = Comment.objects.get(c_no=c_no)
+    qs.c_content = c_content
+    qs.c_date = datetime.now()
+    qs.save()
+    
+    # 저장데이터 보내기
+    context={"c_no":c_no,"c_content":c_content,"c_date":qs.c_date}
+    return JsonResponse(context)
+    
 
 # 댓글쓰기 - ajax
 def commWrite(request):

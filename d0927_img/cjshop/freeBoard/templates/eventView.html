@@ -38,11 +38,33 @@
 					<img src="/static/images/txt/logo.gif" alt="JARDIN SHOP" />
 				</a>
 			</h1>
+			<script>
+				// post방식으로 전송테스트
+				function postBtn(){
+					$.ajax({
+						url:"{% url 'freeBoard:commPost' %}",
+						type:"POST",
+						data:{
+							// .replyType 은 앞에 칸 띄움해야 함.
+							"test":"aaa"
+						},
+						dataType:"json",
+						success:function(data){
+							alert("성공")
+							alert(data.msg+data.member_id)
+
+						},
+						error:function(){
+							alert("error")
+						}
+					})
+				}
+			</script>
 			<div id="quickmenu">
 				<div id="mnaviOpen"><img src="/static/images/btn/btn_mnavi.gif" width="33" height="31" alt="메뉴열기" /></div>
 				<div id="mnaviClose"><img src="/static/images/btn/btn_mnavi_close.gif" width="44" height="43" alt="메뉴닫기" /></div>
 				<ul>
-					<li><a href="#">EVENT</a></li>
+					<li><a onclick="postBtn()">EVENT</a></li>
 					<li><a href="#">CUSTOMER</a></li>
 					<li><a href="#">COMMUNITY</a></li>
 				</ul>
@@ -224,7 +246,7 @@
 										if('{{request.session.session_id}}'==data[i].member_id){
 											//                       updateBtn(1,'2022-10-06','이벤트 당첨되었어요.')       
 											html_data +="<a onclick='updateBtn("+ data[i].c_no +",\"" +data[i].c_date+ "\",\""+ data[i].c_content +"\")' class='rebtn'>수정</a>&nbsp"
-											html_data +="<a class='rebtn'>삭제</a>"
+											html_data +="<a onclick='deleteBtn("+ data[i].c_no +")' class='rebtn'>삭제</a>"
 										}	
 										html_data +="</li>"
 										html_data +="</ul>"
@@ -258,7 +280,7 @@
 										html_data +="<li id='content' class='txt'>"+ data.c_content +"</li>"
 										html_data +="<li class='btn'>"
 										html_data +="<a onclick='updateBtn("+ data.c_no +",\"" +data.c_date+ "\",\""+ data.c_content +"\")' class='rebtn'>수정</a>&nbsp"
-										html_data +="<a href='#' class='rebtn'>삭제</a>"
+										html_data +="<a onclick='deleteBtn("+ data.c_no +")' class='rebtn'>삭제</a>"
 										html_data +="</li>"
 										html_data +="</ul>"
 
@@ -303,15 +325,26 @@
 
 						// 댓글수정저장
 						function updateOkBtn(c_no){
-							alert(c_no)
+							alert("댓글수정 완료")
 							$.ajax({
-								url:"",
+								url:"{% url 'freeBoard:commUpdate' %}",
 								type:"GET",
 								data:{
-									"c_no":c_no,"c_content":$("#"+c_no+".replyType").val()
+									// .replyType 은 앞에 칸 띄움해야 함.
+									"c_no":c_no,"c_content":$("#"+c_no+" .replyType").val()
 								},
 								dataType:"json",
 								success:function(data){
+									var html_data =""
+									html_data +="<li class='name'>"+'{{request.session.session_id}}'+"<span id='date'>["+data.c_date +"]</span></li>"
+									html_data +="<li id='content' class='txt'>"+ data.c_content +"</li>"
+									html_data +="<li class='btn'>"
+									html_data +="<a onclick='updateBtn("+ data.c_no +",\"" +data.c_date+ "\",\""+ data.c_content +"\")' class='rebtn'>수정</a>&nbsp"
+									html_data +="<a onclick='deleteBtn("+ data.c_no +")' class='rebtn'>삭제</a>"
+									html_data +="</li>"
+
+									$("#"+c_no).html(html_data)
+									updateFormCheck=0
 
 								},
 								error:function(){
@@ -320,6 +353,28 @@
 							})
 						}//댓글수정저장
 
+						// 댓글수정삭제
+						function deleteBtn(c_no){
+							if(confirm("댓글삭제를 하시겠습니까?")){
+								$.ajax({
+									url:"{% url 'freeBoard:commDelete' %}",
+									type:"GET",
+									data:{
+										"c_no":c_no
+									},
+									dataType:"json",
+									success:function(data){
+										alert(data.msg)
+										$("#"+c_no).remove()
+									},
+									error:function(){
+										alert("error")
+									}
+								})
+							}//if
+						}// 댓글수정삭제
+
+
 						// 댓글수정취소
 						function cancelBtn(c_no,c_date,c_content){
 							var html_data =""
@@ -327,7 +382,7 @@
 							html_data +="<li id='content' class='txt'>"+ c_content +"</li>"
 							html_data +="<li class='btn'>"
 							html_data +="<a onclick='updateBtn("+ c_no +",\"" +c_date+ "\",\""+ c_content +"\")' class='rebtn'>수정</a>&nbsp"
-							html_data +="<a href='#' class='rebtn'>삭제</a>"
+							html_data +="<a onclick='deleteBtn("+ c_no +")' class='rebtn'>삭제</a>"
 							html_data +="</li>"
 
 							$("#"+c_no).html(html_data)

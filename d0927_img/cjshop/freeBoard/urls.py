@@ -15,4 +15,11 @@ urlpatterns = [
     # ajax event
     path('commList/',views.commList,name="commList"),
     path('commWrite/',views.commWrite,name="commWrite"),
+    path('commUpdate/',views.commUpdate,name="commUpdate"),
+    path('commDelete/',views.commDelete,name="commDelete"),
+    path('commPost/',views.commPost,name="commPost"),
+    
+    # 공공데이터
+    path('publicList/',views.publicList,name="publicList"),
+    
 ]
