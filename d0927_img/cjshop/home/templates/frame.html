@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Insert title here</title>
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR:300,400,500,700,900&display=swap" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/style_main.css' %}">
+	</head>
+	<body>
+	 	<header>
+	 		<div id="nav_up">
+	 			<ul>
+					{% if not request.session.session_id %}
+						<li><a href="{% url 'member:join1' %}">회원가입</a></li>
+						<li><a href="{% url 'member:login' %}">로그인</a></li>
+	 				{% else %}
+						<li>회원정보</li>
+						<li><a href="{% url 'member:logout' %}">로그아웃</a></li>
+					 {% endif %}
+	 				<li>고객행복센터</li>
+	 				<li>배송정보검색</li>
+	 				<li><a href="/admin">admin</a></li>
+	 			</ul>
+	 		</div>
+	 		<nav>
+	 			<h1></h1>
+	 			<ul>
+					<a href="{% url 'freeBoard:chart01'%}"><li>차트그리기</li></a>
+	 				<li>COOKIT메뉴</li>
+	 				<a href="{% url 'freeBoard:fboardList' nowpage=1 category='1' sword='1' %}"><li>게시판</li></a>
+	 				<a href="{% url 'freeBoard:event'%}"><li>이벤트</li></a>
+	 				<a href="{% url 'freeBoard:publicList'%}"><li>데이터</li></a>
+	 			</ul>
+	 			<ul>
+	 				<li><a href="#"><span>장바구니</span></a></li>
+	 				<li><a href="#"><span>차트그리기</span></a></li>
+	 			</ul>
+	 		
+	 		</nav>
+	 	</header>
+
+	 	<section>
+	 		<!-- content부분 --> 		
+			{% block content-block %}
+			    <!-- 데이터 들어가는 부분 -->
+			{% endblock content-block %}
+	 	</section>
+
+
+		<footer>
+			 	<div>
+			 		<div>
+				 		<a href="#"></a>
+				 		<span>© COOKIT ALL RIGHTS RESERVED</span>
+			 		</div>
+			 		<div>
+			 			<ul>
+				 			<li>이용약관</li>
+				 			<li class="foot_li">개인정보처리 방침</li>
+				 			<li>법적고지</li>
+				 			<li class="foot_end">사업자정보 확인</li>
+			 			</ul>
+			 			<div>
+				 			<p>씨제이제일제당(주)대표이사 : 손경식,강신호,신현재 ㅣ 사업자등록번호 : 104-86-09535</p> 
+				 			<p>주소 : 서울 중구 동호로 330 CJ제일제당 센터 (우) 04560 ㅣ 통신판매업신고 중구 제 07767호 ㅣ 개인정보보호책임자 : 조영민</p>
+							<p>이메일 : cjon@cj.net ㅣ 호스팅제공자 : CJ올리브네트웍스㈜</p> 
+							<p>고객님은 안전거래를 위해 현금등으로 결제시 LG U+ 전자 결제의 매매보호(에스크로) 서비스를 이용하실 수 있습니다. <a href="#">가입 사실 확인</a></p>
+						</div>
+			 		</div>
+			 		<div>
+			 		<span>CJ그룹계열사 바로가기 ▽</span>
+			 		<span>고객행복센터 1668-1920</span>
+			 		<a href="#">1:1 문의</a>
+			 		</div>
+			 	</div>
+		</footer>
+	</body>
+</html>

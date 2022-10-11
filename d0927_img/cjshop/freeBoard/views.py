@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.shortcuts import render,redirect
 from member.models import Member
-from freeBoard.models import Comment, Fboard
+from freeBoard.models import Comment, Fboard, Revenue
 from django.db.models import F,Q
 from django.core.paginator import Paginator
 from django.http import JsonResponse,HttpResponse
@@ -9,6 +9,37 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 import requests
 
+
+# 차트그리기
+def chart01(request):
+    return render(request,'chart01.html')
+
+# 차트-json
+@csrf_exempt
+def chartData(request):
+    qs = Revenue.objects.all()
+    chartList = list(qs.values())
+    print("views chartData : ")
+    print(chartList)
+    
+    return JsonResponse(chartList,safe=False)
+
+@csrf_exempt
+def chartList(request):
+    public_key ='918RE13GA7OY7ZEmUzApgbOeAcQoZ%2FaHsXWcqPAKQ9YNNPj83KOstRMRIUrCFIAcm9qj2R6b7NFZjp%2FYsYzJLg%3D%3D'
+    resultType ='json'
+    url = 'http://apis.data.go.kr/1160100/service/GetStockSecuritiesInfoService/getStockPriceInfo?serviceKey={}&numOfRows=10&pageNo=1&resultType={}'.format(public_key,resultType)
+    res = requests.get(url)  # url에 있는 소스 코드 가져오기
+    json_res = json.loads(res.text) # 모든 소스코드, json타입으로 변경
+    publicList = json_res['response']['body']['items']
+    # nlist = list(map(int,publicList)) #dic타입을 list타입으로 변경
+    # nlist = list(publicList) #dic타입을 list타입으로 변경
+    nlist =[1,2,3,4,5]
+    
+    print("nlist")
+    print(publicList)
+    
+    return JsonResponse(publicList,safe=False)
 
 
 # 공공데이터 리스트

@@ -22,4 +22,11 @@ urlpatterns = [
     # 공공데이터
     path('publicList/',views.publicList,name="publicList"),
     
+    # 차트그리기
+    path('chart01/',views.chart01,name="chart01"),
+    path('chartData/',views.chartData,name="chartData"),
+    # 공공데이터 차트그리기
+    path('chartList/',views.chartList,name="chartList"),
+    
+    
 ]

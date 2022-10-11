@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>차트그리기</title>
+    <style>
+        #chartBtn{width:120px; height:80px; font-size:20px;}
+        div{width:1500px; height:800px; border:1px solid black; padding:50px; margin:50px;}
+    </style>
+    <script>
+        function chartBtn(){
+            $.ajax({
+                url:"{% url 'freeBoard:chartData' %}",
+                type:"post",
+                data:{},
+                dataType:"json",
+                success:function(data){
+                    console.log(data)
+
+                    //차트그리기 시작
+                    let stock_label = []
+                    let stock_data = []
+
+                    //데이터 넣기
+                    for(var i=0; i<6;i++){  //data:list배열
+                        stock_label.push(data[i].r_month) //배열 데이터 입력함수
+                        stock_data.push(data[i].r_revenue) //배열 데이터 입력함수
+                    }
+
+                    const ctx = document.getElementById('myChart').getContext("2d");
+                    const myChart = new Chart(ctx, {
+                        type: 'bar', //bar-막대, line-선, 
+                        data: {
+                            labels: stock_label,
+                            datasets: [{
+                                label: '삼성전자 매출액',
+                                data: stock_data,
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(255, 206, 86, 0.2)',
+                                    'rgba(75, 192, 192, 0.2)',
+                                    'rgba(153, 102, 255, 0.2)',
+                                    'rgba(255, 159, 64, 0.2)'
+                                ],
+                                borderColor: [
+                                    'rgba(255, 99, 132, 1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(153, 102, 255, 1)',
+                                    'rgba(255, 159, 64, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                    //차트그리기 끝
+
+                },
+                error:function(){
+                    alert("데이터 가져오기 실패")
+                }
+            })//ajax
+        }//chartBtn
+
+    </script>
+</head>
+<body>
+    <button id="chartBtn" onclick="chartBtn()">차트그리기</button>
+    
+    <div>
+        <canvas id="myChart"></canvas>
+    </div>
+    
+</body>
+</html>

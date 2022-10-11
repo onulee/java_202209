@@ -41,3 +41,16 @@ class Comment(models.Model):
     
     def __str__(self):
         return self.c_content
+
+
+# 매출액db    
+class Revenue(models.Model):    
+    r_no = models.AutoField(primary_key=True)
+    # 월별-01
+    r_month = models.CharField(max_length=10)
+    # 금액
+    r_revenue = models.IntegerField(default=0)
+    
+    def __str__(self):
+        return self.r_month
+   
